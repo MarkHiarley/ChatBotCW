@@ -17,7 +17,6 @@ func NewStore(docs []models.Document) *Store {
 	return &Store{Data: docs}
 }
 
-// SearchWithKeywords - BUSCA PRINCIPAL (melhorada)
 func (s *Store) SearchWithKeywords(queryVector []float32, keywords []string) []models.Document {
 	type result struct {
 		doc         models.Document

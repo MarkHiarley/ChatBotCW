@@ -80,15 +80,15 @@ func main() {
 		bar := 0
 		total := len(rawDocs)
 		for i, doc := range rawDocs {
-			// Limpeza básica extra
+
 			cleanContent := strings.TrimSpace(doc.Content)
 			if len(cleanContent) < 20 {
 				continue
-			} // Pula frases muito curtas
+			}
 
 			embedding, err := geminiService.GenerateEmbedding(ctx, cleanContent)
 			if err != nil {
-				// Se der erro (ex: 429), apenas loga e continua para não quebrar tudo
+
 				log.Printf("⚠️ Erro no doc %d: %v", i, err)
 				continue
 			}
@@ -103,7 +103,6 @@ func main() {
 				fmt.Printf("Processados: %d/%d\n", bar, total)
 			}
 
-			// TÁTICA ANTI-BLOQUEIO: Espera 500ms entre chamadas (ajuste conforme sua cota)
 			time.Sleep(100 * time.Millisecond)
 		}
 
@@ -175,19 +174,16 @@ func main() {
 			return
 		}
 
-		// E. Retornar resposta
 		response := ChatResponse{Answer: answer}
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(response)
 	})
 
-	// 7. Endpoint de health check
 	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte("OK"))
 	})
 
-	// 8. Endpoint para limpar cache
 	http.HandleFunc("/clear-cache", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPost {
 			http.Error(w, "Método não permitido", http.StatusMethodNotAllowed)
