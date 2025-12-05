@@ -1,0 +1,31 @@
+# Binários
+/chatbot-cw
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Cache de documentos
+cache/
+*.log
+
+# Arquivos temporários
+*.tmp
+*.temp
+
+# Arquivos de configuração com secrets
+.env
+
+# Dependências Go
+go.sum
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
