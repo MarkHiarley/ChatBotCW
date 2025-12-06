@@ -26,12 +26,27 @@ Um chatbot inteligente que responde perguntas sobre a Cloudwalk usando a API do 
 
 ## Executando
 
+### Opção 1: Com Docker (Recomendado) 🐳
+
 ```bash
-# Opção 1: Usar arquivo .env (recomendado)
+# Build e executar com docker-compose
+docker-compose up -d
+
+# Ver logs
+docker-compose logs -f
+
+# Parar o serviço
+docker-compose down
+```
+
+### Opção 2: Localmente com Go
+
+```bash
+# Com arquivo .env (recomendado)
 # Basta ter o arquivo .env configurado com a GEMINI_API_KEY
 go run cmd/api/main.go
 
-# Opção 2: Definir a API key manualmente via variável de ambiente
+# Ou com variável de ambiente
 export GEMINI_API_KEY="sua_api_key_aqui"
 go run cmd/api/main.go
 ```
@@ -64,6 +79,53 @@ Health check do serviço.
 
 ### POST /debug-search
 Endpoint de debug para ver quais documentos foram encontrados (apenas desenvolvimento).
+
+## Arquitetura e Tecnologias
+
+### Stack Tecnológico
+- **Backend**: Go (Golang) 1.23+
+- **IA**: Google Gemini API (gemini-1.5-flash)
+- **Web Scraping**: Colly
+- **Containerização**: Docker & Docker Compose
+- **Cache**: Sistema de persistência em JSON
+
+### Fluxo RAG (Retrieval-Augmented Generation)
+
+1. **Ingestão de Dados**
+   - Web scraping dos sites oficiais (cloudwalk.io, infinitepay.io)
+   - Coleta de ~2500 documentos com informações relevantes
+   - Filtros de qualidade (tamanho mínimo, limpeza de texto)
+
+2. **Geração de Embeddings**
+   - Conversão de texto em vetores numéricos
+   - Sistema de embeddings simulados (hash-based) para testes
+   - Cache persistente para evitar reprocessamento
+
+3. **Busca Híbrida**
+   - Similaridade de cosseno entre vetores
+   - Busca por palavras-chave com boost
+   - Priorização de documentos informativos
+   - Retorna top 15 documentos mais relevantes
+
+4. **Geração de Resposta**
+   - Contexto montado a partir dos documentos encontrados
+   - Prompt engineering otimizado
+   - API do Gemini para gerar respostas naturais
+   - Validação e formatação da resposta
+
+### Estrutura do Projeto
+```
+├── cmd/api/main.go              # Servidor HTTP principal
+├── internal/
+│   ├── cache/cache.go           # Sistema de cache
+│   ├── gemini/service.go        # Cliente Gemini API
+│   ├── scraper/scraper.go       # Web scraping
+│   └── vectorstore/store.go     # Busca por similaridade
+├── pkg/models/document.go       # Modelos de dados
+├── cache/                       # Cache persistente (gitignored)
+├── Dockerfile                   # Container da aplicação
+└── docker-compose.yaml          # Orquestração
+```
 
 ## 3 Exemplos de Conversas
 

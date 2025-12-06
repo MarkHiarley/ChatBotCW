@@ -1,0 +1,39 @@
+# Git
+.git
+.gitignore
+
+# Cache e dados temporários
+cache/
+*.log
+*.tmp
+
+# Arquivos de ambiente
+.env
+.env.local
+
+# Dependências e builds
+vendor/
+chatbot
+*.exe
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Documentação e scripts
+README.md
+*.md
+test.sh
+collect_responses.sh
+start.sh
+
+# Docker
+Dockerfile
+docker-compose.yaml
+.dockerignore
+
+# OS
+.DS_Store
+Thumbs.db
